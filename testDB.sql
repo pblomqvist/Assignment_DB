@@ -21,30 +21,23 @@ CREATE TABLE jacka (
         ON DELETE CASCADE
 )  ENGINE=INNODB;
 
-CREATE TABLE klubba (
-    ägare CHAR(13),
-    nr VARCHAR(2),
-    material VARCHAR(10),
-    PRIMARY KEY (nr , ägare),
-    FOREIGN KEY (ägare)
-        REFERENCES spelare (pnr)
-        ON DELETE CASCADE
-)  ENGINE=INNODB;
-
 CREATE TABLE konstruktion (
     serienummer VARCHAR(15),
     hårdhet VARCHAR(10),
     PRIMARY KEY (serienummer)
 )  ENGINE=INNODB;
 
-CREATE TABLE klubba_konstruktion (
-    konstruktion_serienr VARCHAR(15),
-    klubba_nr VARCHAR(2),
-    PRIMARY KEY (konstruktion_serienr , klubba_nr),
-    FOREIGN KEY (konstruktion_serienr)
-        REFERENCES konstruktion (serienummer),
-    FOREIGN KEY (klubba_nr)
-        REFERENCES klubba (nr)
+CREATE TABLE klubba (
+    ägare CHAR(13),
+    nr VARCHAR(2),
+    material VARCHAR(10),
+    konstruktion varchar(15),
+    PRIMARY KEY (nr , ägare),
+     FOREIGN KEY (konstruktion)
+        REFERENCES konstruktion (serienummer)
+        ON DELETE CASCADE,
+    FOREIGN KEY (ägare)
+        REFERENCES spelare (pnr)
         ON DELETE CASCADE
 )  ENGINE=INNODB;
 
@@ -83,7 +76,6 @@ CREATE TABLE tävling_väder (
         REFERENCES tävling (namn)
 )  ENGINE=INNODB;
 
-
 -- INSERT RECORDS
 INSERT INTO spelare (pnr, namn, ålder)
 VALUES ('19970603-2013', 'Johan Andersson', '25'),
@@ -101,13 +93,7 @@ VALUES ('Fjällräven', 'M', 'Goretex', '19970603-2013'),
         ('Filippa K', 'L', 'Bomull', '20001220-7680'),
         ('BOSS', 'XS', 'Polyamid', '19560220-3089'),
         ('ROCKANDBLUE', 'L', 'Polyester', '19330901-1010');
-
-INSERT INTO klubba (ägare, nr, material)
-VALUES ('19780603-8650', '01', 'Trä'),
-		('20020215-6510', '02', 'Trä'),
-        ('19970603-2013', '03', 'Plast'),
-        ('20001220-7680', '04', 'Metall');
-
+        
 INSERT INTO konstruktion
 VALUES ('SN001', '01'),
 		('SN002', '02'),
@@ -120,10 +106,11 @@ VALUES ('SN001', '01'),
 		('SN009', '09'),
 		('SN010', '10');
 
-insert into klubba_konstruktion
-values ('SN010', '01'),
-		('SN005', '02'),
-        ('SN003', '03');
+INSERT INTO klubba (ägare, nr, material, konstruktion)
+VALUES ('19780603-8650', '01', 'Trä', 'SN010'),
+		('20020215-6510', '02', 'Trä', 'SN005'),
+        ('19970603-2013', '03', 'Plast', 'SN004'),
+        ('20001220-7680', '04', 'Metall', 'SN002');
 
 INSERT INTO tävling (namn, datum)
 VALUES ('Big Golf Cup Skövde', '2021-06-10'),
@@ -201,7 +188,7 @@ SELECT
 FROM
     spelare
 WHERE
-    ålder >= 30;
+    ålder <= 30;
 
 -- 08
 DELETE FROM jacka 
@@ -209,12 +196,12 @@ WHERE
     ägare = '19970603-2013';
 
 -- 09
-SELECT 
-    AVG(ålder)
-FROM
-    spelare;
-
--- 10
 DELETE FROM spelare 
 WHERE
     pnr = '19780603-8650';
+    
+-- 10
+    SELECT 
+    AVG(ålder)
+FROM
+    spelare;
