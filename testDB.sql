@@ -7,8 +7,7 @@ CREATE TABLE spelare (
     pnr CHAR(13) NOT NULL,
     namn VARCHAR(20),
     ålder INT,
-    PRIMARY KEY (pnr),
-    UNIQUE (pnr)
+    PRIMARY KEY (pnr)
 )  ENGINE=INNODB;
 
 CREATE TABLE jacka (
